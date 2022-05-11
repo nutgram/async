@@ -1,0 +1,21 @@
+{
+  "name": "nutgram/async",
+  "description": "Async running mode for Nutgram",
+  "type": "library",
+  "require": {
+    "spatie/async": "^1.5",
+    "nutgram/nutgram": "dev-master"
+  },
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "SergiX44\\Async\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "SergiX44",
+      "email": "sergio@brighenti.me"
+    }
+  ]
+}
