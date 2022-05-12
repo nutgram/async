@@ -18,6 +18,8 @@ class ExtendsNutgramProvider extends ServiceProvider
             if (!$app->runningUnitTests() && $app->runningInConsole()) {
                 $bot->setRunningMode(ParallelPolling::class);
             }
+
+            return $bot;
         });
     }
 
