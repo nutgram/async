@@ -3,8 +3,8 @@
   "description": "Async running mode for Nutgram",
   "type": "library",
   "require": {
-    "spatie/async": "^1.5",
-    "nutgram/nutgram": "dev-master"
+    "nutgram/nutgram": ">=3.1.4",
+    "spatie/fork": "^1.1"
   },
   "license": "MIT",
   "autoload": {

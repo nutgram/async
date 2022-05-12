@@ -5,27 +5,33 @@ namespace SergiX44\Async;
 use SergiX44\Nutgram\Nutgram;
 use SergiX44\Nutgram\RunningMode\Polling;
 use Spatie\Async\Pool;
+use Spatie\Fork\Fork;
+use Throwable;
 
 class ParallelPolling extends Polling
 {
-    private Pool $pool;
+    private Fork $pool;
 
-    public function __construct()
+    public function __construct(int $concurrency = 2)
     {
-        $this->pool = Pool::create()
-            ->concurrency(4);
+        $this->pool = Fork::new()->concurrent($concurrency);
     }
 
     protected function fire(Nutgram $bot, array|null $updates): void
     {
-        $this->pool->add(function () use ($bot, $updates) {
-            parent::fire($bot, $updates);
-        });
-    }
+        $tasks = [];
+        foreach ($updates as $update) {
+            $tasks[] = static function () use ($bot, $update) {
+                try {
+                    $bot->processUpdate($update);
+                } catch (Throwable $e) {
+                    echo "$e\n";
+                } finally {
+                    $bot->clearData();
+                }
+            };
+        }
 
-    public function __destruct()
-    {
-        $this->pool->stop();
-        $this->pool->wait();
+        $this->pool->run($tasks);
     }
 }

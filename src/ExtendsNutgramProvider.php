@@ -16,7 +16,8 @@ class ExtendsNutgramProvider extends ServiceProvider
     {
         $this->app->extend(Nutgram::class, function (Nutgram $bot, Application $app) {
             if (!$app->runningUnitTests() && $app->runningInConsole()) {
-                $bot->setRunningMode(ParallelPolling::class);
+                $concurrency = $bot->getConfig()['concurrency'] ?? 2;
+                $bot->setRunningMode(new ParallelPolling($concurrency));
             }
 
             return $bot;
