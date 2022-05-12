@@ -32,6 +32,6 @@ class ParallelPolling extends Polling
             };
         }
 
-        $this->pool->run($tasks);
+        $this->pool->run(...$tasks);
     }
 }
