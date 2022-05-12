@@ -12,7 +12,8 @@ class ParallelPolling extends Polling
 
     public function __construct()
     {
-        $this->pool = Pool::create();
+        $this->pool = Pool::create()
+            ->concurrency(4);
     }
 
     protected function fire(Nutgram $bot, array|null $updates): void

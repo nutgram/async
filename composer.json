@@ -17,5 +17,15 @@
       "name": "SergiX44",
       "email": "sergio@brighenti.me"
     }
-  ]
+  ],
+  "require-dev": {
+    "orchestra/testbench": "^7.5"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "SergiX44\\Async\\ExtendsNutgramProvider"
+      ]
+    }
+  }
 }
