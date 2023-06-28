@@ -4,7 +4,7 @@
   "type": "library",
   "require": {
     "nutgram/nutgram": "^4.0",
-    "asyncphp/doorman": "^4.0"
+    "ext-pcntl": "*"
   },
   "license": "MIT",
   "autoload": {
