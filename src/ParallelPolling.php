@@ -2,36 +2,39 @@
 
 namespace SergiX44\Async;
 
+use AsyncPHP\Doorman\Manager\ProcessManager;
+use AsyncPHP\Doorman\Rule\InMemoryRule;
+use AsyncPHP\Doorman\Task\ProcessCallbackTask;
 use SergiX44\Nutgram\Nutgram;
 use SergiX44\Nutgram\RunningMode\Polling;
-use Spatie\Async\Pool;
-use Spatie\Fork\Fork;
 use Throwable;
 
 class ParallelPolling extends Polling
 {
-    private Fork $pool;
+    private ProcessManager $manager;
 
     public function __construct(int $concurrency = 2)
     {
-        $this->pool = Fork::new()->concurrent($concurrency);
+        $this->manager = new ProcessManager();
+        $rule = new InMemoryRule();
+        $rule->setProcesses($concurrency);
+        $this->manager->addRule($rule);
     }
 
-    protected function fire(Nutgram $bot, array|null $updates): void
+    protected function fire(Nutgram $bot, array $updates = []): void
     {
-        $tasks = [];
         foreach ($updates as $update) {
-            $tasks[] = static function () use ($bot, $update) {
+            $this->manager->addTask(new ProcessCallbackTask(static function () use ($bot, $update) {
                 try {
                     $bot->processUpdate($update);
                 } catch (Throwable $e) {
-                    echo "$e\n";
+                    fwrite(self::$STDERR, "$e\n");
                 } finally {
-                    $bot->clearData();
+                    $bot->clear();
                 }
-            };
+            }));
         }
 
-        $this->pool->run(...$tasks);
+        $this->manager->tick();
     }
 }
