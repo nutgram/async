@@ -3,8 +3,8 @@
   "description": "Async running mode for Nutgram",
   "type": "library",
   "require": {
-    "nutgram/nutgram": ">=3.1.4",
-    "spatie/fork": "^1.1"
+    "nutgram/nutgram": "^4.0",
+    "ext-pcntl": "*"
   },
   "license": "MIT",
   "autoload": {
@@ -19,7 +19,7 @@
     }
   ],
   "require-dev": {
-    "orchestra/testbench": "^7.5"
+    "orchestra/testbench": "^7.0|^8.0"
   },
   "extra": {
     "laravel": {
