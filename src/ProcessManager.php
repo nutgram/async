@@ -11,10 +11,9 @@ class ProcessManager
 {
 
     private array $runners = [];
+    private int $latestUpdateId = 0;
 
-    public function __construct(private int $maxWorkers)
-    {
-    }
+    public function __construct(private int $maxWorkers) {}
 
     public function pushUpdates(Nutgram $bot, mixed $stderr, array $updates)
     {
@@ -42,6 +41,11 @@ class ProcessManager
     {
         $updateWorkers = [];
         foreach ($updates as $update) {
+            $updateId = $update->update_id;
+            if ($this->latestUpdateId >= $updateId) {
+                continue;
+            }
+
             if (count($updateWorkers) >= $this->maxWorkers) {
                 $pid = pcntl_wait($status);
                 unset($updateWorkers[$pid]);
@@ -55,6 +59,7 @@ class ProcessManager
                 $updateWorkers[$pid] = $pid;
             } else {
                 try {
+                    $this->latestUpdateId = $updateId;
                     $bot->processUpdate($update);
                 } catch (Throwable $e) {
                     fwrite($stderr, "$e\n");
@@ -69,5 +74,4 @@ class ProcessManager
         }
         exit(0);
     }
-
 }
